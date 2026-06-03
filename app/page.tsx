@@ -66,15 +66,6 @@ export default async function PageAccueil() {
             </p>
           </div>
 
-          <div className="text-right max-w-[200px] flex flex-col justify-center">
-            <p className="text-[10px] uppercase tracking-[0.08em] text-[#A7E0E0] font-semibold block leading-tight">
-              Somme du Top 1 Rejeté
-            </p>
-            <p className="text-xl font-black text-[#CA3C66] mt-1 leading-none">
-              {totalTop1.toFixed(2)} €
-            </p>
-          </div>
-
           <Link
             href="/auth"
             className="flex items-center gap-2 px-4 py-2 bg-[#CA3C66] hover:bg-[#b8335a] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors"
