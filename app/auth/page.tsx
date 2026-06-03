@@ -4,6 +4,7 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function PageConnexion() {
     const [email, setEmail] = useState('')
@@ -66,6 +67,14 @@ export default function PageConnexion() {
                 <button type="submit" className="w-full py-2.5 bg-[#CA3C66] text-white font-bold rounded-xl text-xs uppercase tracking-wider transition hover:bg-[#b8345a]">
                     Se connecter
                 </button>
+
+                <p className="text-xs text-center text-zinc-500 mt-4">
+  Pas de compte ?{' '}
+  <Link href="/inscription" className="text-[#CA3C66] hover:underline font-semibold">
+    Inscrivez-vous ici
+  </Link>
+</p>
+
             </form>
         </div>
     )

@@ -68,11 +68,9 @@ export default async function PageAccueil() {
 
           <Link
             href="/auth"
-            className="flex items-center gap-2 px-4 py-2 bg-[#CA3C66] hover:bg-[#b8335a] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors"
-          >
-            Connexion
+            className="flex items-center gap-2 px-4 py-2 bg-[#CA3C66] hover:bg-[#b8335a] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors">
+              Connexion
           </Link>
-
         </div>
       </header>
 
