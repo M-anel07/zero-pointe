@@ -2,6 +2,8 @@
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import FluxCaniveauClient from './composants/craquagesupp'
+import { getServerSession } from "next-auth"
+import BoutonDeconnexion from './composants/boutondeco' 
 
 function getLimitesSemaine() {
   const maintenant = new Date()
@@ -37,7 +39,6 @@ async function getDepensesSemaine() {
     }
   })
 
-  // Formatage et tri par rejets
   return depenses
     .map((d) => {
       const rejets = d.votes.filter(v => v.type === "SHAMEFUL").length
@@ -50,6 +51,8 @@ async function getDepensesSemaine() {
 export default async function PageAccueil() {
   const toutesLesDepenses = await getDepensesSemaine()
   const totalTop1 = toutesLesDepenses.length > 0 ? toutesLesDepenses[0].prix : 0
+  
+  const session = await getServerSession()
 
   return (
     <div className="min-h-screen bg-[#0d0d0d] font-sans flex flex-col text-slate-200 w-full">
@@ -66,15 +69,30 @@ export default async function PageAccueil() {
             </p>
           </div>
 
-          <Link
-            href="/auth"
-            className="flex items-center gap-2 px-4 py-2 bg-[#CA3C66] hover:bg-[#b8335a] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors">
-              Connexion
-          </Link>
+          {/* Condition d'affichage selon le statut de connexion */}
+          {session ? (
+            <div className="flex items-center gap-3">
+              {/* Le bouton de déconnexion à gauche */}
+              <BoutonDeconnexion />
+              
+              {/* Le bouton de dépôt à droite */}
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2 px-4 py-2 bg-[#CA3C66] hover:bg-[#b8335a] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors">
+                  Déposer une dépense
+              </Link>
+            </div>
+          ) : (
+            <Link
+              href="/auth"
+              className="flex items-center gap-2 px-4 py-2 bg-[#CA3C66] hover:bg-[#b8335a] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors">
+                Connexion
+            </Link>
+          )}
         </div>
       </header>
 
-      {/* Flux Principal géré par le composant client */}
+      {/* Flux Principal */}
       <main className="flex-1 w-full px-8 py-8 space-y-6">
         <div className="flex justify-between items-center border-b border-white/8 pb-3 w-full">
           <h2 className="text-lg font-bold text-white uppercase tracking-wider text-sm">
@@ -85,6 +103,7 @@ export default async function PageAccueil() {
         <FluxCaniveauClient depensesInitiales={toutesLesDepenses} />
       </main>
 
+      {/* Footer intact */}
       <footer className="mt-auto bg-[#111111] border-t border-white/8 py-6">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs tracking-wide">
           <p className="text-zinc-500 font-medium">
@@ -92,11 +111,9 @@ export default async function PageAccueil() {
           </p>
           <div className="flex gap-6 text-[#A7E0E0] font-semibold uppercase text-[10px] tracking-wider">
             <span className="text-xs text-zinc-500">Mise à jour dimanche à 23h59</span>
-
           </div>
           <div>
             <span className="text-zinc-600 font-normal normal-case text-xs">Fait avec soin</span>
-
           </div>
         </div>
       </footer>

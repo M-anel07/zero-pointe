@@ -1,7 +1,7 @@
 // app/page.tsx
 import prisma from '@/lib/prisma'
 import Link from 'next/link'
-import FormulaireDepense from '../composants/FormulaireDepense'
+import FormulaireDepense from '../composants/formulairedepense'
 
 async function getDepenses() {
     return await prisma.depense.findMany({
@@ -34,15 +34,24 @@ export default async function PageAccueil() {
         <div className="min-h-screen bg-[#0d0d0d] font-sans flex flex-col">
 
             {/* Header */}
-            <header className="bg-[#111111] border-b border-white/8 py-5 sticky top-0 z-10">
-                <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-                    <div>
-                        <h1 className="text-2xl font-extrabold tracking-tight text-[#CA3C66] leading-none">
-                            Zéro Pointé
-                        </h1>
-                        <p className="text-[11px] text-[#A7E0E0] mt-0.5 tracking-wide">
-                            Le tribunal de vos craquages
-                        </p>
+            <header className="bg-[#111111] border-b border-white/8 py-5 sticky top-0 z-10 w-full">
+                <div className="w-full px-8 flex justify-between items-center">
+                    <div className="flex items-center gap-4">
+                        <Link
+                            href="/"
+                            className="flex items-center gap-1.5 text-zinc-500 hover:text-white transition text-sm"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Retour
+                        </Link>
+                        <div className="w-px h-5 bg-white/10" />
+                        <div>
+                            <h1 className="text-xl font-extrabold tracking-tight text-[#CA3C66] leading-none">
+                                Dashboard
+                            </h1>
+                        </div>
                     </div>
                     <div className="text-right">
                         <p className="text-[10px] uppercase tracking-[0.1em] text-[#A7E0E0] font-semibold">
@@ -56,8 +65,7 @@ export default async function PageAccueil() {
             </header>
 
             {/* Layout */}
-            <div className="flex-1 flex flex-col lg:flex-row max-w-7xl mx-auto w-full px-6 py-8 gap-8">
-
+            <div className="flex-1 flex flex-col lg:flex-row w-full px-8 py-8 gap-8">
                 {/* Colonne gauche */}
                 <main className="flex-1 flex flex-col gap-6">
 

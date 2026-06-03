@@ -2,7 +2,7 @@
 'use client'
 
 import { useRef } from 'react'
-import { creerDepense } from '../actions/Depense'
+import { creerDepense } from '../actions/depense'
 
 export default function FormulaireDepense() {
     const formRef = useRef<HTMLFormElement>(null)

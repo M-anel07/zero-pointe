@@ -39,12 +39,12 @@ export default async function PageHistorique({ searchParams }: PageProps) {
     return (
         <div className="min-h-screen bg-[#0d0d0d] font-sans flex flex-col">
 
-            {/* Header */}
-            <header className="bg-[#111111] border-b border-white/8 py-5 sticky top-0 z-10">
-                <div className="max-w-4xl mx-auto px-6 flex justify-between items-center">
+            {/* Header complet en pleine largeur avec le total à gauche et le nombre de dépenses à droite */}
+            <header className="bg-[#111111] border-b border-white/8 py-5 sticky top-0 z-10 w-full">
+                <div className="w-full px-8 flex justify-between items-center">
                     <div className="flex items-center gap-4">
                         <Link
-                            href="/"
+                            href="/dashboard"
                             className="flex items-center gap-1.5 text-zinc-500 hover:text-white transition text-sm"
                         >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -58,16 +58,27 @@ export default async function PageHistorique({ searchParams }: PageProps) {
                                 Historique complet
                             </h1>
                             <p className="text-[11px] text-[#A7E0E0] mt-0.5">
-                                {count} dépense{count !== 1 ? 's' : ''} — {total.toFixed(2)} € au total
+                                {total.toFixed(2)} € au total
                             </p>
                         </div>
+                    </div>
+
+                    {/* Nombre total de dépenses affiché en haut à droite */}
+                    <div className="text-right">
+                        <p className="text-[10px] uppercase tracking-[0.1em] text-[#A7E0E0] font-semibold">
+                            Dépenses affichées
+                        </p>
+                        <p className="text-xl font-bold text-white leading-tight">
+                            {count}
+                        </p>
                     </div>
                 </div>
             </header>
 
-            <div className="max-w-4xl mx-auto w-full px-6 py-8 flex flex-col gap-6">
+            {/* Conteneur principal en pleine largeur */}
+            <div className="w-full px-8 py-8 flex flex-col gap-6">
 
-                {/* Filtres (Client Component) */}
+                {/* Filtres (Client Component aligné sur une seule ligne) */}
                 <FiltresHistorique
                     categories={CATEGORIES}
                     categorieActive={categorie}
@@ -108,17 +119,6 @@ export default async function PageHistorique({ searchParams }: PageProps) {
                         ))}
                     </div>
                 )}
-
-                {/* Footer récap */}
-                {depenses.length > 0 && (
-                    <div className="bg-[#161616] border border-white/8 rounded-2xl px-5 py-4 flex justify-between items-center">
-                        <p className="text-sm text-[#A7E0E0] font-semibold">
-                            {count} dépense{count !== 1 ? 's' : ''} affichée{count !== 1 ? 's' : ''}
-                        </p>
-                        <p className="text-lg font-bold text-[#ED93B1]">{total.toFixed(2)} €</p>
-                    </div>
-                )}
-
             </div>
         </div>
     )
