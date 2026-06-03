@@ -74,6 +74,14 @@ export default async function PageAccueil() {
               {totalTop1.toFixed(2)} €
             </p>
           </div>
+
+          <Link
+            href="/auth"
+            className="flex items-center gap-2 px-4 py-2 bg-[#CA3C66] hover:bg-[#b8335a] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors"
+          >
+            Connexion
+          </Link>
+
         </div>
       </header>
 
