@@ -1,81 +1,176 @@
-// app/auth/page.tsx
 'use client'
 
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { inscriptionUser } from '@/app/actions/auth' // Import de ton action
 
-export default function PageConnexion() {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
-    const router = useRouter()
+export default function PageAuth() {
+    const [mode, setMode] = useState<'connexion' | 'inscription'>('connexion')
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
-    async function handleSubmit(e: React.FormEvent) {
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
-        setError('')
+        setLoading(true)
+        setError(null)
 
-        // On appelle NextAuth avec le provider 'credentials' configuré dans la route API
-        const resultat = await signIn('credentials', {
-            email: email,
-            password: password,
-            redirect: false, // Empêche NextAuth de recharger brutalement la page
-        })
+        const form = e.currentTarget
+        const formData = new FormData(form)
+        const data = Object.fromEntries(formData) as Record<string, string>
 
-        if (resultat?.error) {
-            setError("Identifiants incorrects.")
+        if (mode === 'inscription') {
+            // 1. On crée le compte via ta Server Action
+            const res = await inscriptionUser(formData)
+
+            if (res?.error) {
+                setError(res.error)
+                setLoading(false)
+                return
+            }
+
+            // 2. Puis on connecte automatiquement l'utilisateur
+            const result = await signIn('credentials', {
+                email: data.email,
+                password: data.password,
+                redirect: false,
+            })
+
+            if (result?.error) {
+                setError('Compte créé mais la connexion automatique a échoué. Essaie de te connecter.')
+                setLoading(false)
+                return
+            }
+
         } else {
-            // Connexion réussie ! On redirige l'utilisateur vers l'accueil
-            router.push('/')
-            router.refresh()
+            // Connexion directe via NextAuth
+            const result = await signIn('credentials', {
+                email: data.email,
+                password: data.password,
+                redirect: false,
+            })
+
+            if (result?.error) {
+                setError('Email ou mot de passe incorrect.')
+                setLoading(false)
+                return
+            }
         }
+
+        window.location.href = '/'
     }
 
     return (
-        <div className="min-h-screen bg-[#0d0d0d] flex items-center justify-center p-6 text-slate-200">
-            <form onSubmit={handleSubmit} className="bg-[#161616] border border-white/8 rounded-2xl p-8 max-w-sm w-full space-y-4">
-                <div>
-                    <h2 className="text-xl font-extrabold text-[#CA3C66]">Connexion</h2>
-                    <p className="text-xs text-zinc-500">Accédez au tribunal de vos craquages</p>
+        <div className="min-h-screen bg-[#0d0d0d] font-sans flex flex-col text-slate-200">
+
+            <header className="bg-[#111111] border-b border-white/8 py-5">
+                <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+                    <Link href="/" className="group flex items-center gap-3">
+                        <svg className="w-4 h-4 text-zinc-500 group-hover:text-white transition" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                        <div>
+                            <h1 className="text-2xl font-extrabold tracking-tight text-[#CA3C66] leading-none">Zéro Pointé</h1>
+                            <p className="text-[11px] text-[#A7E0E0] mt-1 tracking-wide uppercase">Le tribunal de la honte</p>
+                        </div>
+                    </Link>
                 </div>
+            </header>
 
-                {error && <p className="text-xs text-red-400 bg-red-950/40 p-2 rounded-lg border border-red-900/50">{error}</p>}
+            <main className="flex-1 flex items-center justify-center px-4 py-16">
+                <div className="w-full max-w-sm">
 
-                <div className="space-y-1">
-                    <label className="block text-[10px] font-semibold uppercase tracking-wider text-zinc-500">Email</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="w-full px-4 py-2 bg-[#1f1f1f] border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#CA3C66]"
-                    />
+                    <div className="flex bg-[#161616] border border-white/8 rounded-xl p-1 mb-8">
+                        {(['connexion', 'inscription'] as const).map((m) => (
+                            <button
+                                key={m}
+                                type="button"
+                                onClick={() => { setMode(m); setError(null) }}
+                                className={`flex-1 py-2 text-xs font-semibold uppercase tracking-wider rounded-lg transition-all ${mode === m ? 'bg-[#CA3C66] text-white' : 'text-zinc-500 hover:text-white'
+                                    }`}
+                            >
+                                {m === 'connexion' ? 'Connexion' : 'Inscription'}
+                            </button>
+                        ))}
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+
+                        {mode === 'inscription' && (
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-[10px] uppercase tracking-widest text-[#A7E0E0] font-semibold">Pseudo</label>
+                                <input
+                                    name="pseudo"
+                                    type="text"
+                                    required
+                                    autoComplete="username"
+                                    placeholder="ton_pseudo"
+                                    className="bg-[#161616] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#CA3C66]/60 transition"
+                                />
+                            </div>
+                        )}
+
+                        <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] uppercase tracking-widest text-[#A7E0E0] font-semibold">Email</label>
+                            <input
+                                name="email"
+                                type="email"
+                                required
+                                autoComplete="email"
+                                placeholder="toi@exemple.fr"
+                                className="bg-[#161616] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#CA3C66]/60 transition"
+                            />
+                        </div>
+
+                        <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] uppercase tracking-widest text-[#A7E0E0] font-semibold">Mot de passe</label>
+                            <input
+                                name="password"
+                                type="password"
+                                required
+                                autoComplete={mode === 'inscription' ? 'new-password' : 'current-password'}
+                                placeholder="••••••••"
+                                className="bg-[#161616] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#CA3C66]/60 transition"
+                            />
+                        </div>
+
+                        {error && (
+                            <p className="text-xs text-[#ED93B1] bg-[#CA3C66]/10 border border-[#CA3C66]/20 rounded-xl px-4 py-3">
+                                {error}
+                            </p>
+                        )}
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="mt-2 w-full bg-[#CA3C66] hover:bg-[#b8335a] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-sm uppercase tracking-wider py-3 rounded-xl transition-colors"
+                        >
+                            {loading ? '...' : mode === 'connexion' ? 'Se connecter' : "S'inscrire"}
+                        </button>
+                    </form>
+
+                    <p className="mt-6 text-center text-xs text-zinc-600">
+                        {mode === 'connexion' ? 'Pas encore de compte ?' : 'Déjà un compte ?'}{' '}
+                        <button
+                            type="button"
+                            onClick={() => { setMode(mode === 'connexion' ? 'inscription' : 'connexion'); setError(null) }}
+                            className="text-[#A7E0E0] hover:text-white transition font-semibold"
+                        >
+                            {mode === 'connexion' ? "S'inscrire" : 'Se connecter'}
+                        </button>
+                    </p>
+
                 </div>
+            </main>
 
-                <div className="space-y-1">
-                    <label className="block text-[10px] font-semibold uppercase tracking-wider text-zinc-500">Mot de passe</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="w-full px-4 py-2 bg-[#1f1f1f] border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#CA3C66]"
-                    />
+            <footer className="bg-[#111111] border-t border-white/8 py-6">
+                <div className="max-w-7xl mx-auto px-6 text-center">
+                    <p className="text-zinc-500 text-xs">
+                        &copy; {new Date().getFullYear()} Zéro Pointé. Aucun droit réservé, contrôlez vos finances.
+                    </p>
                 </div>
+            </footer >
 
-                <button type="submit" className="w-full py-2.5 bg-[#CA3C66] text-white font-bold rounded-xl text-xs uppercase tracking-wider transition hover:bg-[#b8345a]">
-                    Se connecter
-                </button>
-
-                <p className="text-xs text-center text-zinc-500 mt-4">
-  Pas de compte ?{' '}
-  <Link href="/inscription" className="text-[#CA3C66] hover:underline font-semibold">
-    Inscrivez-vous ici
-  </Link>
-</p>
-
-            </form>
-        </div>
+        </div >
     )
-} 
+}
