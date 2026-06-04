@@ -5,8 +5,8 @@ import { useRouter, usePathname } from 'next/navigation'
 
 const TRI_OPTIONS = [
   { value: 'recent',    label: 'Plus récent' },
-  { value: 'prix_desc',  label: 'Prix ↓' },
-  { value: 'prix_asc',   label: 'Prix ↑' },
+  { value: 'prix_desc',  label: 'Prix ↑' },
+  { value: 'prix_asc',   label: 'Prix ↓' },
 ]
 
 interface Props {

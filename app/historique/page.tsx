@@ -1,7 +1,7 @@
 // app/historique/page.tsx
 import prisma from '@/lib/prisma'
 import Link from 'next/link'
-import FiltresHistorique from '../composants/FiltresHistorique'
+import FiltresHistorique from '../composants/filtreshistorique'
 
 const CATEGORIES = ['Shopping', 'Restaurant', 'Beauté', 'Tech', 'Food', 'Jeux', 'Autre']
 
@@ -16,13 +16,13 @@ const CATEGORY_COLORS: Record<string, string> = {
 }
 
 interface PageProps {
-    searchParams: { categorie?: string; tri?: string }
+    searchParams: Promise<{ categorie?: string; tri?: string }>
 }
 
 async function getDepenses(categorie?: string, tri?: string) {
     const orderBy = tri === 'prix_asc' ? { prix: 'asc' as const }
         : tri === 'prix_desc' ? { prix: 'desc' as const }
-            : { id: 'desc' as const } // défaut : plus récent
+            : { creerLe: 'desc' as const } // défaut : plus récent en premier
 
     return await prisma.depense.findMany({
         where: categorie ? { category: categorie } : undefined,
@@ -30,8 +30,16 @@ async function getDepenses(categorie?: string, tri?: string) {
     })
 }
 
+function formatDate(date: Date) {
+    return new Intl.DateTimeFormat('fr-FR', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+    }).format(new Date(date))
+}
+
 export default async function PageHistorique({ searchParams }: PageProps) {
-    const { categorie, tri } = searchParams
+    const { categorie, tri } = await searchParams
     const depenses = await getDepenses(categorie, tri)
 
     const total = depenses.reduce((acc, d) => acc + d.prix, 0)
@@ -40,7 +48,6 @@ export default async function PageHistorique({ searchParams }: PageProps) {
     return (
         <div className="min-h-screen bg-[#0d0d0d] font-sans flex flex-col">
 
-            {/* Header complet en pleine largeur avec le total à gauche et le nombre de dépenses à droite */}
             <header className="bg-[#111111] border-b border-white/8 py-5 sticky top-0 z-10 w-full">
                 <div className="w-full px-8 flex justify-between items-center">
                     <div className="flex items-center gap-4">
@@ -63,8 +70,6 @@ export default async function PageHistorique({ searchParams }: PageProps) {
                             </p>
                         </div>
                     </div>
-
-                    {/* Nombre total de dépenses affiché en haut à droite */}
                     <div className="text-right">
                         <p className="text-[10px] uppercase tracking-[0.1em] text-[#A7E0E0] font-semibold">
                             Dépenses affichées
@@ -76,17 +81,13 @@ export default async function PageHistorique({ searchParams }: PageProps) {
                 </div>
             </header>
 
-            {/* Conteneur principal en pleine largeur */}
             <div className="w-full px-8 py-8 flex flex-col gap-6">
-
-                {/* Filtres (Client Component aligné sur une seule ligne) */}
                 <FiltresHistorique
                     categories={CATEGORIES}
                     categorieActive={categorie}
                     triActif={tri}
                 />
 
-                {/* Liste */}
                 {depenses.length === 0 ? (
                     <div className="flex items-center justify-center h-48 text-zinc-600 text-sm border border-dashed border-white/8 rounded-2xl">
                         Aucune dépense pour cette sélection.
@@ -99,18 +100,21 @@ export default async function PageHistorique({ searchParams }: PageProps) {
                                 className="bg-[#161616] border border-white/8 rounded-2xl px-5 py-4 flex items-center justify-between gap-4"
                             >
                                 <div className="flex items-center gap-4 min-w-0">
-                                    {/* Indicateur catégorie */}
                                     <div className="shrink-0 w-1 h-10 rounded-full bg-[#CA3C66]/60" />
                                     <div className="min-w-0">
                                         <p className="text-sm font-semibold text-white/90 truncate">
                                             {depense.titre}
                                         </p>
-                                        <span
-                                            className={`inline-block mt-1 text-[10px] font-semibold px-2 py-0.5 rounded-full ${CATEGORY_COLORS[depense.category] ?? 'bg-zinc-800 text-zinc-400'
-                                                }`}
-                                        >
-                                            {depense.category}
-                                        </span>
+                                        <div className="flex items-center gap-2 mt-1 flex-wrap">
+                                            <span
+                                                className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full ${CATEGORY_COLORS[depense.category] ?? 'bg-zinc-800 text-zinc-400'}`}
+                                            >
+                                                {depense.category}
+                                            </span>
+                                            <span className="text-[10px] text-zinc-500">
+                                                {formatDate(depense.creerLe)}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <p className="text-lg font-bold text-[#ED93B1] whitespace-nowrap shrink-0">
