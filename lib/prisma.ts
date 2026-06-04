@@ -1,4 +1,3 @@
-// lib/prisma.ts
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 import { PrismaClient } from '@/app/generated/prisma/client'
 
@@ -7,6 +6,15 @@ declare global {
 }
 
 function createClient() {
+    // Si on est sur Vercel (Production), on force l'URL d'Aiven dans l'environnement
+    if (process.env.NODE_ENV === 'production') {
+        if (process.env.DATABASE_URL) {
+            process.env.DATABASE_URL = process.env.DATABASE_URL;
+        }
+        return new PrismaClient()
+    }
+
+    // Sinon, on garde ta configuration XAMPP locale pour toi et Lucas
     const adapter = new PrismaMariaDb({
         host: process.env.DATABASE_HOST || '127.0.0.1',
         port: parseInt(process.env.DATABASE_PORT || '3306'),
@@ -16,11 +24,9 @@ function createClient() {
         connectionLimit: 5,
     })
 
-    // En Prisma 7, l'adapter se passe comme ça :
     return new PrismaClient({ adapter })
 }
 
-// Ici on appelle BIEN la fonction createClient() si prisma n'existe pas déjà
 const prisma = global.prisma ?? createClient()
 
 if (process.env.NODE_ENV !== 'production') {
