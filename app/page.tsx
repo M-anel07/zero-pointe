@@ -3,7 +3,8 @@ import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import FluxCaniveauClient from './composants/craquagesupp'
 import { getServerSession } from "next-auth"
-import BoutonDeconnexion from './composants/boutondeco' 
+import { authOptions } from './api/auth/[...nextauth]/route'  // ← ajouter cette ligne
+import BoutonDeconnexion from './composants/boutondeco'
 
 function getLimitesSemaine() {
   const maintenant = new Date()
@@ -52,7 +53,7 @@ export default async function PageAccueil() {
   const toutesLesDepenses = await getDepensesSemaine()
   const totalTop1 = toutesLesDepenses.length > 0 ? toutesLesDepenses[0].prix : 0
   
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions)
 
   return (
     <div className="min-h-screen bg-[#0d0d0d] font-sans flex flex-col text-slate-200 w-full">
