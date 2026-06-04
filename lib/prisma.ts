@@ -18,8 +18,18 @@ function createClient() {
         return new PrismaClient({ adapter })
     }
 
-    // En prod, Prisma lit DATABASE_URL directement depuis le schema
-    return new PrismaClient()
+    // En prod, on parse DATABASE_URL pour l'adaptateur MariaDB
+    const url = new URL(process.env.DATABASE_URL!)
+    const adapter = new PrismaMariaDb({
+        host: url.hostname,
+        port: parseInt(url.port || '3306'),
+        user: url.username,
+        password: url.password,
+        database: url.pathname.replace('/', ''),
+        connectionLimit: 5,
+        ssl: { rejectUnauthorized: false },
+    })
+    return new PrismaClient({ adapter })
 }
 
 const prisma = global.prisma ?? createClient()
