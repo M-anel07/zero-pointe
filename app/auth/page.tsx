@@ -1,3 +1,4 @@
+// app/auth/page.tsx
 'use client'
 
 import { useState } from 'react'
@@ -61,10 +62,11 @@ export default function PageAuth() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0d0d0d] font-sans flex flex-col text-slate-200">
+        <div className="min-h-screen bg-[#0d0d0d] font-sans flex flex-col text-slate-200 w-full">
 
-            <header className="bg-[#111111] border-b border-white/8 py-5">
-                <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+            {/* Header — CHANGÉ : w-full px-8 au lieu de max-w-7xl mx-auto px-6 */}
+            <header className="bg-[#111111] border-b border-white/8 py-5 w-full">
+                <div className="w-full px-8 flex items-center justify-between">
                     <Link href="/" className="group flex items-center gap-3">
                         <svg className="w-4 h-4 text-zinc-500 group-hover:text-white transition" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -81,16 +83,15 @@ export default function PageAuth() {
                 <div className="w-full max-w-sm">
 
                     <div className="flex bg-[#161616] border border-white/8 rounded-xl p-1 mb-8">
-                        {(['connexion', 'inscription'] as const).map((m) => (
-                            <button
-                                key={m}
-                                type="button"
-                                onClick={() => { setMode(m); setError(null) }}
-                                className={`flex-1 py-2 text-xs font-semibold uppercase tracking-wider rounded-lg transition-all ${mode === m ? 'bg-[#CA3C66] text-white' : 'text-zinc-500 hover:text-white'
-                                    }`}
-                            >
-                                {m === 'connexion' ? 'Connexion' : 'Inscription'}
-                            </button>
+                        {(['connexion', 'inscription'] as const).map((m) => (<button
+                            key={m}
+                            type="button"
+                            onClick={() => { setMode(m); setError(null) }}
+                            className={`flex-1 py-2 text-xs font-semibold uppercase tracking-wider rounded-lg transition-all ${mode === m ? 'bg-[#CA3C66] text-white' : 'text-zinc-500 hover:text-white'
+                                }`}
+                        >
+                            {m === 'connexion' ? 'Connexion' : 'Inscription'}
+                        </button>
                         ))}
                     </div>
 
@@ -163,14 +164,15 @@ export default function PageAuth() {
                 </div>
             </main>
 
-            <footer className="bg-[#111111] border-t border-white/8 py-6">
-                <div className="max-w-7xl mx-auto px-6 text-center">
+            {/* Footer — CHANGÉ : Supprimé max-w-7xl mx-auto px-6 pour occuper toute la largeur */}
+            <footer className="bg-[#111111] border-t border-white/8 py-6 w-full px-8">
+                <div className="text-center">
                     <p className="text-zinc-500 text-xs">
                         &copy; {new Date().getFullYear()} Zéro Pointé. Aucun droit réservé, contrôlez vos finances.
                     </p>
                 </div>
-            </footer >
+            </footer>
 
-        </div >
+        </div>
     )
 }

@@ -12,10 +12,11 @@ async function getDepenses() {
 const CATEGORY_COLORS: Record<string, string> = {
     Shopping: 'bg-pink-950/60 text-pink-300',
     Restaurant: 'bg-orange-950/60 text-orange-300',
-    Loisirs: 'bg-violet-950/60 text-violet-300',
     Beauté: 'bg-rose-950/60 text-rose-300',
     Tech: 'bg-blue-950/60 text-blue-300',
-    Autre: 'bg-zinc-800 text-zinc-400',
+    Food: 'bg-amber-950/60 text-amber-300',
+    Jeux: 'bg-cyan-950/60 text-cyan-300',
+    Autre: 'bg-violet-950/60 text-violet-300',
 }
 
 export default async function PageAccueil() {
@@ -105,7 +106,7 @@ export default async function PageAccueil() {
 
                         {/* Liste — 4 max */}
                         <div className="px-4 py-4 space-y-2.5">
-                            {recentes.length === 0 ? (
+                            {recentes.length === 0 ? ( 
                                 <div className="flex items-center justify-center h-32 text-zinc-600 text-sm border border-dashed border-white/8 rounded-xl">
                                     Aucun craquage pour le moment.
                                 </div>

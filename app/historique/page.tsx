@@ -3,15 +3,16 @@ import prisma from '@/lib/prisma'
 import Link from 'next/link'
 import FiltresHistorique from '../composants/FiltresHistorique'
 
-const CATEGORIES = ['Shopping', 'Restaurant', 'Loisirs', 'Beauté', 'Tech', 'Autre']
+const CATEGORIES = ['Shopping', 'Restaurant', 'Beauté', 'Tech', 'Food', 'Jeux', 'Autre']
 
 const CATEGORY_COLORS: Record<string, string> = {
     Shopping: 'bg-pink-950/60 text-pink-300',
     Restaurant: 'bg-orange-950/60 text-orange-300',
-    Loisirs: 'bg-violet-950/60 text-violet-300',
     Beauté: 'bg-rose-950/60 text-rose-300',
     Tech: 'bg-blue-950/60 text-blue-300',
-    Autre: 'bg-zinc-800 text-zinc-400',
+    Food: 'bg-amber-950/60 text-amber-300',
+    Jeux: 'bg-cyan-950/60 text-cyan-300',
+    Autre: 'bg-violet-950/60 text-violet-300',
 }
 
 interface PageProps {

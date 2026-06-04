@@ -3,7 +3,7 @@ import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import FluxCaniveauClient from './composants/craquagesupp'
 import { getServerSession } from "next-auth"
-import BoutonDeconnexion from './composants/boutondeco' 
+import BoutonDeconnexion from './composants/boutondeco'
 
 function getLimitesSemaine() {
   const maintenant = new Date()
@@ -51,7 +51,7 @@ async function getDepensesSemaine() {
 export default async function PageAccueil() {
   const toutesLesDepenses = await getDepensesSemaine()
   const totalTop1 = toutesLesDepenses.length > 0 ? toutesLesDepenses[0].prix : 0
-  
+
   const session = await getServerSession()
 
   return (
@@ -74,19 +74,25 @@ export default async function PageAccueil() {
             <div className="flex items-center gap-3">
               {/* Le bouton de déconnexion à gauche */}
               <BoutonDeconnexion />
-              
+
               {/* Le bouton de dépôt à droite */}
               <Link
                 href="/dashboard"
                 className="flex items-center gap-2 px-4 py-2 bg-[#CA3C66] hover:bg-[#b8335a] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors">
-                  Déposer une dépense
+                Déposer une dépense
+              </Link>
+
+              <Link
+                href="/historique"
+                className="flex items-center gap-2 px-4 py-2 bg-[#CA3C66] hover:bg-[#b8335a] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors">
+                Historique
               </Link>
             </div>
           ) : (
             <Link
               href="/auth"
               className="flex items-center gap-2 px-4 py-2 bg-[#CA3C66] hover:bg-[#b8335a] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors">
-                Connexion
+              Connexion
             </Link>
           )}
         </div>
