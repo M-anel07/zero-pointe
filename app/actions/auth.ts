@@ -31,7 +31,7 @@ export async function inscriptionUser(formData: FormData) {
             }
         })
 
-        return { success: true }
+return { success: "Inscription réussie !" }
 
     } catch (error) {
         console.error(error)
