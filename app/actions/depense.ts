@@ -3,9 +3,10 @@
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 export async function creerDepense(formData: FormData) {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
         throw new Error("Tu dois être connecté pour ajouter une dépense.")
