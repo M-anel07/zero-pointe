@@ -62,7 +62,7 @@ export default async function PageAccueil() {
         <div className="w-full px-8 flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight text-[#CA3C66] leading-none">
-              Zéro Pointé
+              <Link href="/">Zéro Pointé</Link>
             </h1>
             <p className="text-[11px] text-[#A7E0E0] mt-1.5 tracking-wide uppercase">
               Le tribunal de la honte
@@ -72,14 +72,10 @@ export default async function PageAccueil() {
           {/* Condition d'affichage selon le statut de connexion */}
           {session ? (
             <div className="flex items-center gap-3">
-              {/* Le bouton de déconnexion à gauche */}
-              <BoutonDeconnexion />
-
-              {/* Le bouton de dépôt à droite */}
               <Link
                 href="/dashboard"
                 className="flex items-center gap-2 px-4 py-2 bg-[#CA3C66] hover:bg-[#b8335a] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors">
-                Déposer une dépense
+                Une dépense
               </Link>
 
               <Link
@@ -87,6 +83,14 @@ export default async function PageAccueil() {
                 className="flex items-center gap-2 px-4 py-2 bg-[#CA3C66] hover:bg-[#b8335a] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors">
                 Historique
               </Link>
+
+              <Link
+                href="/compte"
+                className="flex items-center gap-2 px-4 py-2 bg-[#1f1f1f] hover:bg-[#2a2a2a] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors border border-white/10">
+                Compte
+              </Link>
+
+              <BoutonDeconnexion />
             </div>
           ) : (
             <Link
