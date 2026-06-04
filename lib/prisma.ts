@@ -6,7 +6,6 @@ declare global {
 }
 
 function createClient() {
-    // Si on est en local (sur ton PC), on utilise l'adaptateur MariaDB/XAMPP
     if (process.env.NODE_ENV !== 'production') {
         const adapter = new PrismaMariaDb({
             host: process.env.DATABASE_HOST || '127.0.0.1',
@@ -19,10 +18,8 @@ function createClient() {
         return new PrismaClient({ adapter })
     }
 
-// Si on est sur Vercel, on utilise l'URL d'Aiven passée par les variables d'environnement
-    return new PrismaClient({
-        datasourceUrl: process.env.DATABASE_URL!
-    })
+    // En prod, Prisma lit DATABASE_URL directement depuis le schema
+    return new PrismaClient()
 }
 
 const prisma = global.prisma ?? createClient()
