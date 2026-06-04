@@ -1,21 +1,18 @@
-// app/actions/auth.ts
 'use server'
 
 import prisma from "@/lib/prisma"
+import bcrypt from "bcryptjs"
 
 export async function inscriptionUser(formData: FormData) {
-    // 1. On récupère les données du formulaire
     const email = formData.get('email') as string
     const mdp = formData.get('password') as string
     const pseudo = formData.get('pseudo') as string
 
-    // Sécurité de base
     if (!email || !mdp || !pseudo) {
         return { error: "Tous les champs sont obligatoires." }
     }
 
     try {
-        // 2. On vérifie si l'email existe déjà dans la BDD
         const existeDeja = await prisma.user.findUnique({
             where: { email: email }
         })
@@ -24,17 +21,17 @@ export async function inscriptionUser(formData: FormData) {
             return { error: "Cet email est déjà utilisé." }
         }
 
-        // 3. On crée l'utilisateur dans la base de données
-        // (Note : Si le prof utilise du hachage comme bcrypt, il faudra modifier cette partie)
+        const hash = await bcrypt.hash(mdp, 12)
+
         await prisma.user.create({
             data: {
-                email: email,
-                mdp: mdp, // Stocké en clair pour correspondre à ton authorize actuel
-                pseudo: pseudo
+                email,
+                mdp: hash,
+                pseudo
             }
         })
 
-        return { success: "Inscription réussie ! Vous pouvez vous connecter." }
+        return { success: true }
 
     } catch (error) {
         console.error(error)
