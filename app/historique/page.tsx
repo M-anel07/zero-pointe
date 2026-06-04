@@ -1,7 +1,7 @@
 // app/historique/page.tsx
 import prisma from '@/lib/prisma'
 import Link from 'next/link'
-import FiltresHistorique from '../composants/FiltresHistorique'
+import FiltresHistorique from '../composants/filtreshistorique'
 
 const CATEGORIES = ['Shopping', 'Restaurant', 'Beauté', 'Tech', 'Food', 'Jeux', 'Autre']
 
