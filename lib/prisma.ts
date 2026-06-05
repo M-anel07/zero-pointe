@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import 'server-only' // 🛡️ Sécurité : Empêche strictement d'importer ce fichier côté client (navigateur)
+=======
+// lib/prisma.ts
+>>>>>>> master
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 import { PrismaClient } from '@/app/generated/prisma/client'
 
@@ -19,6 +23,7 @@ const configurationAiven = {
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined }
 
 function createClient() {
+<<<<<<< HEAD
     let adapter;
 
     if (process.env.NODE_ENV !== 'production') {
@@ -49,6 +54,23 @@ function createClient() {
 
 // On récupère l'instance globale existante ou on en crée une nouvelle
 export const prisma = globalForPrisma.prisma ?? createClient()
+=======
+    const adapter = new PrismaMariaDb({
+        host: process.env.DATABASE_HOST || '127.0.0.1',
+        port: parseInt(process.env.DATABASE_PORT || '3306'),
+        user: process.env.DATABASE_USER || 'root',
+        password: process.env.DATABASE_PASSWORD || '',
+        database: process.env.DATABASE_NAME || 'zero-pointe',
+        connectionLimit: 5,
+    })
+
+    // En Prisma 7, l'adapter se passe comme ça :
+    return new PrismaClient({ adapter })
+}
+
+// Ici on appelle BIEN la fonction createClient() si prisma n'existe pas déjà
+const prisma = global.prisma ?? createClient()
+>>>>>>> master
 
 // En développement, on sauvegarde l'instance dans le scope global
 if (process.env.NODE_ENV !== 'production') {
