@@ -1,3 +1,4 @@
+// lib/prisma.ts
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 import { PrismaClient } from '@/app/generated/prisma/client'
 
@@ -6,32 +7,20 @@ declare global {
 }
 
 function createClient() {
-    if (process.env.NODE_ENV !== 'production') {
-        const adapter = new PrismaMariaDb({
-            host: process.env.DATABASE_HOST || '127.0.0.1',
-            port: parseInt(process.env.DATABASE_PORT || '3306'),
-            user: process.env.DATABASE_USER || 'root',
-            password: process.env.DATABASE_PASSWORD || '',
-            database: process.env.DATABASE_NAME || 'zero-pointe',
-            connectionLimit: 5,
-        })
-        return new PrismaClient({ adapter })
-    }
-
-    // En prod, on parse DATABASE_URL pour l'adaptateur MariaDB
-    const url = new URL(process.env.DATABASE_URL!)
     const adapter = new PrismaMariaDb({
-        host: url.hostname,
-        port: parseInt(url.port || '3306'),
-        user: url.username,
-        password: url.password,
-        database: url.pathname.replace('/', ''),
+        host: process.env.DATABASE_HOST || '127.0.0.1',
+        port: parseInt(process.env.DATABASE_PORT || '3306'),
+        user: process.env.DATABASE_USER || 'root',
+        password: process.env.DATABASE_PASSWORD || '',
+        database: process.env.DATABASE_NAME || 'zero-pointe',
         connectionLimit: 5,
-        ssl: { rejectUnauthorized: false },
     })
+
+    // En Prisma 7, l'adapter se passe comme ça :
     return new PrismaClient({ adapter })
 }
 
+// Ici on appelle BIEN la fonction createClient() si prisma n'existe pas déjà
 const prisma = global.prisma ?? createClient()
 
 if (process.env.NODE_ENV !== 'production') {
