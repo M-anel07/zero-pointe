@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import 'server-only' // 🛡️ Sécurité : Empêche strictement d'importer ce fichier côté client (navigateur)
-=======
 // lib/prisma.ts
->>>>>>> master
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 import { PrismaClient } from '@/app/generated/prisma/client'
 
@@ -23,38 +19,6 @@ const configurationAiven = {
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined }
 
 function createClient() {
-<<<<<<< HEAD
-    let adapter;
-
-    if (process.env.NODE_ENV !== 'production') {
-        // En mode Développement
-        adapter = new PrismaMariaDb(configurationAiven)
-    } else {
-        // En mode Production : On extrait dynamiquement les variables depuis DATABASE_URL si nécessaire,
-        // ou on réutilise la config Aiven classique selon tes variables d'environnement de prod.
-        if (process.env.DATABASE_URL) {
-            const url = new URL(process.env.DATABASE_URL)
-            adapter = new PrismaMariaDb({
-                host: url.hostname,
-                port: parseInt(url.port || '3306'),
-                user: url.username,
-                password: url.password,
-                database: url.pathname.replace('/', ''),
-                connectionLimit: 10,
-                connectTimeout: 15000,
-                ssl: { rejectUnauthorized: false }, // Souvent requis en production selon l'hébergeur cloud
-            })
-        } else {
-            adapter = new PrismaMariaDb(configurationAiven)
-        }
-    }
-
-    return new PrismaClient({ adapter })
-}
-
-// On récupère l'instance globale existante ou on en crée une nouvelle
-export const prisma = globalForPrisma.prisma ?? createClient()
-=======
     const adapter = new PrismaMariaDb({
         host: process.env.DATABASE_HOST || '127.0.0.1',
         port: parseInt(process.env.DATABASE_PORT || '3306'),
@@ -70,7 +34,6 @@ export const prisma = globalForPrisma.prisma ?? createClient()
 
 // Ici on appelle BIEN la fonction createClient() si prisma n'existe pas déjà
 const prisma = global.prisma ?? createClient()
->>>>>>> master
 
 // En développement, on sauvegarde l'instance dans le scope global
 if (process.env.NODE_ENV !== 'production') {
