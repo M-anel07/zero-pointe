@@ -13,7 +13,7 @@ function createClient() {
         user: process.env.DATABASE_USER || 'root',
         password: process.env.DATABASE_PASSWORD || '',
         database: process.env.DATABASE_NAME || 'zero-pointe',
-        connectionLimit: 5,
+        connectionLimit: 10,
     })
 
     // En Prisma 7, l'adapter se passe comme ça :
