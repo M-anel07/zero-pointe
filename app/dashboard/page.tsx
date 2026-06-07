@@ -36,7 +36,6 @@ export default async function PageAccueil() {
   const max = count > 0 ? Math.max(...depenses.map((d) => d.prix)) : 0;
 
   const recentes = depenses.slice(0, 4);
-  const hasMore = count > 4;
 
   return (
     <div className="min-h-screen bg-[#0d0d0d] font-sans flex flex-col">
@@ -159,27 +158,26 @@ export default async function PageAccueil() {
                 Total&nbsp;:{" "}
                 <span className="text-[#ED93B1]">{total.toFixed(2)} €</span>
               </p>
-              {hasMore && (
-                <Link
-                  href="/historique"
-                  className="flex items-center gap-1.5 px-4 py-2 bg-white/6 border border-white/10 rounded-xl text-xs font-semibold text-white/70"
+              
+              <Link
+                href="/historique"
+                className="flex items-center gap-1.5 px-4 py-2 bg-white/6 border border-white/10 rounded-xl text-xs font-semibold text-white/70 hover:bg-white/10 hover:text-white transition"
+              >
+                Voir tout
+                <svg
+                  className="w-3.5 h-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
                 >
-                  Voir tout
-                  <svg
-                    className="w-3.5 h-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </Link>
-              )}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </Link>
             </div>
           </div>
         </aside>

@@ -25,7 +25,8 @@ const CATEGORY_COLORS: Record<string, string> = {
   Loisirs: "bg-violet-950/60 text-violet-300",
   Beauté: "bg-rose-950/60 text-rose-300",
   Tech: "bg-blue-950/60 text-blue-300",
-  Autre: "bg-zinc-800 text-zinc-400",
+  Jeux: "bg-cyan-950/60 text-cyan-300",
+  Autre: "bg-violet-950/60 text-violet-300"
 };
 
 export default function FluxCaniveauClient({
