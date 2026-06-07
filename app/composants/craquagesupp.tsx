@@ -32,18 +32,6 @@ export default function FluxCaniveauClient({
   const [mesVotes, setMesVotes] = useState<Record<string, string | null>>({});
   const [popupVisible, setPopupVisible] = useState(false);
 
-<<<<<<< HEAD
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const res = await fetch("/api/votes/depenses");
-        if (res.ok) {
-          const data = await res.json();
-          setDepenses(data);
-        }
-      } catch {
-        // silencieux
-=======
   // Polling toutes les 10 secondes
 useEffect(() => {
   // 30 secondes en dev, 15 secondes en prod
@@ -58,7 +46,6 @@ useEffect(() => {
       if (res.ok) {
         const data = await res.json();
         setDepenses(data);
->>>>>>> c907d469052b871c909caf93aaa58565ac1d34fa
       }
     } catch {
       // Silencieux
