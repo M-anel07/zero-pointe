@@ -4,7 +4,7 @@ import Link from "next/link"
 import BoutonDeconnexion from "../composants/boutondeco"
 
 export default async function PageCompte() {
-    const session = await getServerSession()
+  const session = await getServerSession();
 
     if (!session) {
         redirect("/auth")

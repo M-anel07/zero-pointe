@@ -1,4 +1,3 @@
-
 datasource db {
   provider = "mysql"
 }
@@ -9,36 +8,35 @@ generator client {
   previewFeatures = ["driverAdapters"]
 }
 
-// Modèles = tables de la BDD
-
 model User {
-  id            String    @id @default(uuid())
-  pseudo        String?   @unique
-  email         String?   @unique
-  mdp           String?   
-  depense       Depense[]
-  votes         Vote[]
-  inscritLe     DateTime  @default(now())
+  id        String    @id @default(uuid())
+  pseudo    String?   @unique
+  email     String?   @unique
+  mdp       String?
+  image     String?   // <-- ajouté pour l'avatar
+  depense   Depense[]
+  votes     Vote[]
+  inscritLe DateTime  @default(now())
 }
 
 model Depense {
-  id          String   @id @default(uuid())
-  titre       String   // ex: "Set Lego Star Wars"
-  prix        Float    // ex: 219.99
-  category    String   // ex: "Lego", "Resto", "Shopping"
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  votes       Vote[]
-  creerLe     DateTime @default(now())
+  id       String   @id @default(uuid())
+  titre    String
+  prix     Float
+  category String
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  votes    Vote[]
+  creerLe  DateTime @default(now())
 }
 
 model Vote {
-  id        String   @id @default(uuid())
-  type      String   // "VALIDATED" (Dépense acceptée) ou "SHAMEFUL" (Dépense honteuse)
+  id        String  @id @default(uuid())
+  type      String  // "VALIDATED" ou "SHAMEFUL"
   userId    String
   depenseId String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  depense   Depense  @relation(fields: [depenseId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  depense   Depense @relation(fields: [depenseId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, depenseId]) // Un utilisateur ne peut voter qu'une seule fois par dépense
+  @@unique([userId, depenseId])
 }

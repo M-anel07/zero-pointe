@@ -32,6 +32,7 @@ export default function FluxCaniveauClient({
   const [mesVotes, setMesVotes] = useState<Record<string, string | null>>({});
   const [popupVisible, setPopupVisible] = useState(false);
 
+<<<<<<< HEAD
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
@@ -42,10 +43,30 @@ export default function FluxCaniveauClient({
         }
       } catch {
         // silencieux
+=======
+  // Polling toutes les 10 secondes
+useEffect(() => {
+  // 30 secondes en dev, 15 secondes en prod
+  const intervalle = process.env.NODE_ENV === 'development' ? 30_000 : 15_000;
+
+  const interval = setInterval(async () => {
+    // 🛡️ Évite de requêter Aiven si l'onglet est en arrière-plan
+    if (document.hidden) return;
+
+    try {
+      const res = await fetch("/api/votes/depenses");
+      if (res.ok) {
+        const data = await res.json();
+        setDepenses(data);
+>>>>>>> c907d469052b871c909caf93aaa58565ac1d34fa
       }
-    }, 10_000);
-    return () => clearInterval(interval);
-  }, []);
+    } catch {
+      // Silencieux
+    }
+  }, intervalle);
+
+  return () => clearInterval(interval);
+}, []);
 
   async function voter(depenseId: string, type: "SHAMEFUL" | "VALIDATED") {
     if (!session) {
