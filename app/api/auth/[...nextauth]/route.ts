@@ -33,6 +33,24 @@ export const authOptions: NextAuthOptions = {
         signIn: '/auth',
     },
     secret: process.env.NEXTAUTH_SECRET,
+    // --- CE BLOC MANQUAIT ---
+    callbacks: {
+        async jwt({ token, user }) {
+            // Étape 1 : On passe l'id de l'utilisateur dans le token JWT
+            if (user) {
+                token.id = user.id
+            }
+            return token
+        },
+        async session({ session, token }) {
+            // Étape 2 : On récupère l'id du token pour le rendre accessible dans getServerSession()
+            if (session.user && token) {
+                session.user.id = token.id as string
+            }
+            return session
+        }
+    }
+    // ------------------------
 }
 
 const handler = NextAuth(authOptions)
