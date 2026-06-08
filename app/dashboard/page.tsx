@@ -14,7 +14,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   Restaurant: "bg-orange-950/60 text-orange-300",
   Beauté: "bg-rose-950/60 text-rose-300",
   Tech: "bg-blue-950/60 text-blue-300",
-  Food: "bg-amber-950/60 text-amber-300",
+  Nourriture: "bg-amber-950/60 text-amber-300",
   Jeux: "bg-cyan-950/60 text-cyan-300",
   Autre: "bg-violet-950/60 text-violet-300",
 };

@@ -4,7 +4,7 @@
 import { useState, useTransition } from 'react'
 import { creerDepense } from '../actions/depense' // Import de ton action serveur
 
-const CATEGORIES = ['Shopping', 'Restaurant', 'Beauté', 'Tech', 'Food', 'Jeux', 'Autre']
+const CATEGORIES = ['Shopping', 'Restaurant', 'Beauté', 'Tech', 'Nourriture', 'Jeux', 'Autre']
 
 export default function FormulaireDepense() {
     const [category, setCategory] = useState('')
