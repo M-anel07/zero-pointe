@@ -1,11 +1,12 @@
+// app/compte/page.tsx
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
-import Link from "next/link"
 import prisma from "@/lib/prisma"
 import BoutonDeconnexion from "../composants/boutondeco"
 import BoutonSuppression from "../composants/boutonsuppression"
 import AvatarEditable from "../composants/avatareditabel"
 import GraphiqueActivite from "../composants/graphiqueactivite"
+import BoutonRetour from "../composants/boutonretour"
 
 export default async function PageCompte() {
     const session = await getServerSession()
@@ -64,34 +65,32 @@ export default async function PageCompte() {
     }
 
     const nomsMois = ["jan", "fév", "mar", "avr", "mai", "juin", "juil", "aoû", "sep", "oct", "nov", "déc"]
+    
     const donneesGraphique = Array.from({ length: 12 }, (_, i) => {
         const d = new Date(maintenant)
         d.setMonth(d.getMonth() - (11 - i))
         const cle = `${d.getFullYear()}-${d.getMonth()}`
         return {
-            mois: nomsMois[d.getMonth()],
+            label: nomsMois[d.getMonth()], // Aligné sur le type 'label' du composant
             valeur: Math.round(totauxParCle[cle] ?? 0),
         }
     })
 
     const totalAnnuel = depensesBrutes.reduce((acc, d) => acc + Number(d.prix), 0)
 
+    const debutMoisActuel = new Date(maintenant.getFullYear(), maintenant.getMonth(), 1)
+    const totalMoisActuel = depensesBrutes
+        .filter(d => d.creerLe >= debutMoisActuel)
+        .reduce((acc, d) => acc + Number(d.prix), 0)
+
     return (
         <div className="min-h-screen bg-[#080808] text-zinc-100 flex flex-col antialiased">
 
-            {/* Header — pleine largeur */}
+            {/* Header */}
             <header className="border-b border-white/15 py-5 sticky top-0 z-10 bg-[#080808]/95 backdrop-blur-md w-full">
                 <div className="w-full px-8 flex items-center justify-between">
                     <div className="flex items-center gap-5">
-                        <Link
-                            href="/"
-                            className="flex items-center gap-2 text-zinc-300 hover:text-white transition-colors text-sm font-semibold"
-                        >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                            </svg>
-                            Retour
-                        </Link>
+                        <BoutonRetour />
                         <div className="w-px h-5 bg-white/20" />
                         <h1 className="text-xl font-black tracking-tight text-[#FF4A7D] leading-none">
                             Mon compte
@@ -130,11 +129,11 @@ export default async function PageCompte() {
                 </div>
 
                 {/* Grille principale 3 colonnes */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
 
                     {/* ── Colonne 1 : informations + déconnexion ── */}
-                    <div className="flex flex-col gap-5">
-                        <div className="bg-[#0d0d0d] border border-white/15 rounded-2xl overflow-hidden">
+                    <div className="flex flex-col gap-5 h-full">
+                        <div className="bg-[#0d0d0d] border border-white/15 rounded-2xl overflow-hidden flex-1">
                             <div className="px-6 py-4 border-b border-white/10 bg-white/[0.02]">
                                 <p className="text-[11px] uppercase tracking-[2.5px] text-zinc-300 font-extrabold">informations</p>
                             </div>
@@ -183,18 +182,21 @@ export default async function PageCompte() {
                     </div>
 
                     {/* ── Colonne 2 : graphique ── */}
-                    <div className="flex flex-col gap-5">
-                        <div className="bg-[#0d0d0d] border border-white/15 rounded-2xl overflow-hidden">
-                            <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
+                    {/* Ajout de flex flex-col pour que la boîte s'allonge correctement et affiche l'enfant complet */}
+                    <div className="flex flex-col gap-5 h-full">
+                        <div className="bg-[#0d0d0d] border border-white/15 rounded-2xl overflow-hidden flex-1 flex flex-col">
+                            <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-white/[0.02] flex-shrink-0">
                                 <p className="text-[11px] uppercase tracking-[2.5px] text-zinc-300 font-extrabold">dépenses / mois</p>
                                 <span className="text-[10px] text-zinc-400 font-bold bg-white/10 px-2 py-0.5 rounded">12 mois</span>
                             </div>
-                            <GraphiqueActivite donnees={donneesGraphique} />
+                            <div className="flex-1">
+                                <GraphiqueActivite donnees={donneesGraphique} couleurPrincipale="#FF4A7D" />
+                            </div>
                         </div>
                     </div>
 
                     {/* ── Colonne 3 : stats + zone dangereuse ── */}
-                    <div className="flex flex-col gap-5">
+                    <div className="flex flex-col gap-5 h-full">
                         <div className="grid grid-cols-3 gap-3">
                             <div className="bg-[#0d0d0d] border border-white/15 rounded-2xl p-4 flex flex-col gap-1">
                                 <p className="text-2xl font-black text-white">{nbVotes}</p>
@@ -207,17 +209,18 @@ export default async function PageCompte() {
                             </div>
 
                             <div
-                                id="card-mois-actif"
-                                className="bg-[#0d0d0d] rounded-2xl p-4 flex flex-col gap-1 transition-all duration-300"
+                                className="bg-[#0d0d0d] rounded-2xl p-4 flex flex-col gap-1"
                                 style={{ border: "1px solid rgba(255,74,125,0.50)" }}
                             >
-                                <p id="card-mois-valeur" className="text-2xl font-black text-[#FF4A7D]">—</p>
-                                <p id="card-mois-label" className="text-[9px] uppercase tracking-[1.5px] text-[#FF4A7D] font-extrabold leading-tight">
-                                    mois actif
+                                <p className="text-2xl font-black text-[#FF4A7D]">
+                                    {totalMoisActuel.toLocaleString("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 })}
+                                </p>
+                                <p className="text-[9px] uppercase tracking-[1.5px] text-[#FF4A7D] font-extrabold leading-tight">
+                                    ce mois-ci
                                 </p>
                             </div>
                         </div>
-                        
+
                         <div className="bg-[#0d0d0d] border border-red-500/40 rounded-2xl overflow-hidden flex-1 shadow-lg shadow-red-950/20">
                             <div className="px-6 py-4 border-b border-red-500/20 flex items-center gap-2 bg-red-950/20">
                                 <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
