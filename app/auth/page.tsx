@@ -67,15 +67,27 @@ export default function PageAuth() {
     <div className="min-h-screen bg-[#0d0d0d] font-sans flex flex-col text-slate-200 w-full">
       {/* Header — CHANGÉ : w-full px-8 au lieu de max-w-7xl mx-auto px-6 */}
       <header className="border-b border-white/15 py-5 sticky top-0 z-10 bg-[#080808]/95 backdrop-blur-md w-full">
-        <div className="flex items-center gap-5">
-          <BoutonRetour />
-          <div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-[#CA3C66] leading-none">
-              Zéro Pointé
-            </h1>
-            <p className="text-[11px] text-[#A7E0E0] mt-1 tracking-wide uppercase">
-              Le tribunal de la honte
-            </p>
+        <div className="w-full px-8 flex items-center justify-between">
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+            <BoutonRetour />
+            <div
+              className="w-px h-5 flex-shrink-0"
+              style={{ background: "rgba(202,60,102,0.25)" }}
+            />
+            <div className="min-w-0">
+              <p
+                className="text-[12px] uppercase tracking-[0.2em] font-bold"
+                style={{ color: "#CA3C66" }}
+              >
+                Zéro Pointé
+              </p>
+              <h1
+                className="text-sm sm:text-base font-extrabold tracking-tight leading-none truncate"
+                style={{ color: "#A7E0E0" }}
+              >
+                Rejoins-nous
+              </h1>
+            </div>
           </div>
         </div>
       </header>

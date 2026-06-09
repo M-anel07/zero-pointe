@@ -73,7 +73,7 @@ export default function GraphiqueActivite({
                             className="text-[9px] uppercase tracking-[2px] font-bold transition-colors duration-200"
                             style={{ color: elementActif ? "rgba(202,60,102,0.8)" : "rgb(82,82,91)" }}
                         >
-                            {elementActif ? `${elementActif.label || elementActif.mois} · sélectionné` : "cliquer une barre"}
+                            {elementActif ? `${elementActif.label || elementActif.mois} · sélectionné` : "cliquer sur une barre"}
                         </p>
                         <p
                             className="text-xl font-bold mt-0.5 transition-all duration-300"

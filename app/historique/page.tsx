@@ -18,16 +18,46 @@ const FILTRES_CATEGORIES = [...OFFICIEL_CATEGORIES, "Autre"];
 
 // Palette de couleurs uniquement pour les catégories dynamiques ("Autre")
 const TAILWIND_PALETTES = [
-  { bg: "bg-pink-950/40 border-pink-900/50 text-pink-300", rawTextColor: "#f472b6" },
-  { bg: "bg-orange-950/40 border-orange-900/50 text-orange-300", rawTextColor: "#fb923c" },
-  { bg: "bg-rose-950/40 border-rose-900/50 text-rose-300", rawTextColor: "#fb7185" },
-  { bg: "bg-blue-950/40 border-blue-900/50 text-blue-300", rawTextColor: "#60a5fa" },
-  { bg: "bg-amber-950/40 border-amber-900/50 text-amber-300", rawTextColor: "#fbbf24" },
-  { bg: "bg-cyan-950/40 border-cyan-900/50 text-cyan-300", rawTextColor: "#22d3ee" },
-  { bg: "bg-violet-950/40 border-violet-900/50 text-violet-300", rawTextColor: "#a78bfa" },
-  { bg: "bg-emerald-950/40 border-emerald-900/50 text-emerald-300", rawTextColor: "#34d399" },
-  { bg: "bg-indigo-950/40 border-indigo-900/50 text-indigo-300", rawTextColor: "#818cf8" },
-  { bg: "bg-fuchsia-950/40 border-fuchsia-900/50 text-fuchsia-300", rawTextColor: "#e879f9" },
+  {
+    bg: "bg-pink-950/40 border-pink-900/50 text-pink-300",
+    rawTextColor: "#f472b6",
+  },
+  {
+    bg: "bg-orange-950/40 border-orange-900/50 text-orange-300",
+    rawTextColor: "#fb923c",
+  },
+  {
+    bg: "bg-rose-950/40 border-rose-900/50 text-rose-300",
+    rawTextColor: "#fb7185",
+  },
+  {
+    bg: "bg-blue-950/40 border-blue-900/50 text-blue-300",
+    rawTextColor: "#60a5fa",
+  },
+  {
+    bg: "bg-amber-950/40 border-amber-900/50 text-amber-300",
+    rawTextColor: "#fbbf24",
+  },
+  {
+    bg: "bg-cyan-950/40 border-cyan-900/50 text-cyan-300",
+    rawTextColor: "#22d3ee",
+  },
+  {
+    bg: "bg-violet-950/40 border-violet-900/50 text-violet-300",
+    rawTextColor: "#a78bfa",
+  },
+  {
+    bg: "bg-emerald-950/40 border-emerald-900/50 text-emerald-300",
+    rawTextColor: "#34d399",
+  },
+  {
+    bg: "bg-indigo-950/40 border-indigo-900/50 text-indigo-300",
+    rawTextColor: "#818cf8",
+  },
+  {
+    bg: "bg-fuchsia-950/40 border-fuchsia-900/50 text-fuchsia-300",
+    rawTextColor: "#e879f9",
+  },
 ];
 
 // Fonction utilitaire pour récupérer la palette en fonction du nom de la catégorie
@@ -44,10 +74,10 @@ function getCategoryColorData(category: string) {
     hash = category.charCodeAt(i) + ((hash << 5) - hash);
   }
   const index = Math.abs(hash) % TAILWIND_PALETTES.length;
-  
+
   return {
-    className: TAILWIND_PALETTES[index].bg, 
-    rawColor: TAILWIND_PALETTES[index].rawTextColor 
+    className: TAILWIND_PALETTES[index].bg,
+    rawColor: TAILWIND_PALETTES[index].rawTextColor,
   };
 }
 
@@ -134,7 +164,7 @@ export default async function PageHistorique({ searchParams }: PageProps) {
     (acc, d) => {
       const displayCategory = OFFICIEL_CATEGORIES.includes(d.category)
         ? d.category
-        : d.category; 
+        : d.category;
       acc[displayCategory] = (acc[displayCategory] ?? 0) + d.prix;
       return acc;
     },
@@ -150,12 +180,26 @@ export default async function PageHistorique({ searchParams }: PageProps) {
       {/* Header */}
       <header className="border-b border-white/15 py-5 sticky top-0 z-10 bg-[#080808]/95 backdrop-blur-md w-full">
         <div className="w-full px-8 flex items-center justify-between">
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
             <BoutonRetour />
-            <div className="w-px h-5 bg-white/20" />
-            <h1 className="text-xl font-black tracking-tight text-[#FF4A7D] leading-none">
-              Mon Historique
-            </h1>
+            <div
+              className="w-px h-5 flex-shrink-0"
+              style={{ background: "rgba(202,60,102,0.25)" }}
+            />
+            <div className="min-w-0">
+              <p
+                className="text-[12px] uppercase tracking-[0.2em] font-bold"
+                style={{ color: "#CA3C66" }}
+              >
+                Zéro Pointé
+              </p>
+              <h1
+                className="text-sm sm:text-base font-extrabold tracking-tight leading-none truncate"
+                style={{ color: "#A7E0E0" }}
+              >
+                Mon Historique{" "}
+              </h1>
+            </div>
           </div>
           <div className="hidden sm:flex flex-col items-end gap-1">
             <span className="text-[10px] uppercase tracking-[2.5px] text-zinc-300 font-bold">
@@ -184,21 +228,25 @@ export default async function PageHistorique({ searchParams }: PageProps) {
               {topCategories.map(([cat, catTotal], i) => {
                 const rank = ["#1", "#2", "#3"][i];
                 const colorData = getCategoryColorData(cat);
-                const borderStyle = OFFICIEL_CATEGORIES.includes(cat) 
-                  ? "border-zinc-800" 
+                const borderStyle = OFFICIEL_CATEGORIES.includes(cat)
+                  ? "border-zinc-800"
                   : "";
 
                 return (
                   <div
                     key={cat}
                     className={`relative rounded-2xl border px-5 py-5 flex flex-col gap-4 bg-zinc-900/40 ${borderStyle}`}
-                    style={!OFFICIEL_CATEGORIES.includes(cat) ? { borderColor: `${colorData.rawColor}33` } : {}}
+                    style={
+                      !OFFICIEL_CATEGORIES.includes(cat)
+                        ? { borderColor: `${colorData.rawColor}33` }
+                        : {}
+                    }
                   >
                     <span className="absolute top-4 right-4 text-[10px] font-black text-zinc-500">
                       {rank}
                     </span>
                     <div>
-                      <p 
+                      <p
                         className="text-[10px] uppercase tracking-[2px] font-bold"
                         style={{ color: colorData.rawColor }}
                       >
@@ -283,7 +331,9 @@ export default async function PageHistorique({ searchParams }: PageProps) {
                           <span
                             className={`inline-block text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wide ${badgeClass}`}
                           >
-                            {isTopCraquage ? "TOP CRAQUAGE" : depense.category.toUpperCase()}
+                            {isTopCraquage
+                              ? "TOP CRAQUAGE"
+                              : depense.category.toUpperCase()}
                           </span>
                         </td>
                         <td className="py-4 px-6 text-[11px] text-zinc-400 font-semibold">

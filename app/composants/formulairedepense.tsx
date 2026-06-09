@@ -48,9 +48,6 @@ export default function FormulaireDepense() {
         >
             {/* Titre section */}
             <div>
-                <p className="text-[9px] uppercase tracking-[0.18em] font-bold" style={{ color: "#A7E0E0" }}>
-                    Nouveau dossier
-                </p>
                 <h3 className="text-base font-black text-white leading-tight">
                     Soumettre un craquage
                 </h3>

@@ -68,9 +68,14 @@ function getLundiSemaine(): Date {
 function getTextePeriode(lundi: Date): string {
   const dimanche = new Date(lundi);
   dimanche.setDate(lundi.getDate() + 6);
-  const options: Intl.DateTimeFormatOptions = { day: "2-digit", month: "2-digit" };
+  const options: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "2-digit",
+  };
   const strLundi = new Intl.DateTimeFormat("fr-FR", options).format(lundi);
-  const strDimanche = new Intl.DateTimeFormat("fr-FR", options).format(dimanche);
+  const strDimanche = new Intl.DateTimeFormat("fr-FR", options).format(
+    dimanche,
+  );
   return `Semaine du ${strLundi} au ${strDimanche}`;
 }
 
@@ -87,7 +92,7 @@ export default async function PageDashboard() {
   const recentes = depenses.slice(0, 5);
 
   const lundi = getLundiSemaine();
-  const titrePeriode = getTextePeriode(lundi); 
+  const titrePeriode = getTextePeriode(lundi);
   const depensesSemaine = depenses.filter((d) => new Date(d.creerLe) >= lundi);
 
   const totauxJour = Array.from({ length: 7 }, (_, i) => {
@@ -116,7 +121,10 @@ export default async function PageDashboard() {
   return (
     <div
       className="min-h-screen font-sans flex flex-col"
-      style={{ background: "linear-gradient(160deg, #1a0a10 0%, #0d0d0d 40%, #0d0d0d 100%)" }}
+      style={{
+        background:
+          "linear-gradient(160deg, #1a0a10 0%, #0d0d0d 40%, #0d0d0d 100%)",
+      }}
     >
       {/* ── Header ── */}
       <header
@@ -130,25 +138,44 @@ export default async function PageDashboard() {
         <div className="w-full px-4 sm:px-8 flex justify-between items-center">
           <div className="flex items-center gap-3 sm:gap-4 min-w-0">
             <BoutonRetour />
-            <div className="w-px h-5 flex-shrink-0" style={{ background: "rgba(202,60,102,0.25)" }} />
+            <div
+              className="w-px h-5 flex-shrink-0"
+              style={{ background: "rgba(202,60,102,0.25)" }}
+            />
             <div className="min-w-0">
-              <p className="text-[9px] uppercase tracking-[0.2em] font-bold" style={{ color: "#A7E0E0" }}>
+              <p
+                className="text-[12px] uppercase tracking-[0.2em] font-bold"
+                style={{ color: "#CA3C66" }}
+              >
                 Zéro Pointé
               </p>
-              <h1 className="text-sm sm:text-base font-extrabold tracking-tight leading-none truncate" style={{ color: "#CA3C66" }}>
-                Soumission de Dépense{" "}
-                <span className="text-white/40 font-medium text-xs sm:text-sm hidden sm:inline">(Le Tribunal de la Honte)</span>
+              <h1
+                className="text-sm sm:text-base font-extrabold tracking-tight leading-none truncate"
+                style={{ color: "#A7E0E0" }}
+              >
+                Mon Dépôt{" "}
               </h1>
             </div>
           </div>
           <div className="text-right flex-shrink-0">
-            <p className="text-[9px] uppercase tracking-[0.2em] font-bold" style={{ color: "#A7E0E0" }}>
+            <p
+              className="text-[9px] uppercase tracking-[0.2em] font-bold"
+              style={{ color: "#A7E0E0" }}
+            >
               Total Cumulé
             </p>
-            <p className="text-xl sm:text-2xl font-black leading-tight" style={{ color: "#CA3C66" }}>
-              {total.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+            <p
+              className="text-xl sm:text-2xl font-black leading-tight"
+              style={{ color: "#CA3C66" }}
+            >
+              {total.toLocaleString("fr-FR", {
+                style: "currency",
+                currency: "EUR",
+              })}
             </p>
-            <p className="text-[10px] text-zinc-500 font-medium hidden sm:block">sur 12 mois</p>
+            <p className="text-[10px] text-zinc-500 font-medium hidden sm:block">
+              sur 12 mois
+            </p>
           </div>
         </div>
       </header>
@@ -156,7 +183,6 @@ export default async function PageDashboard() {
       {/* ── Body ── */}
       <div className="w-full px-4 sm:px-8 py-6 sm:py-8">
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 lg:items-stretch">
-
           {/* Formulaire gauche */}
           <div className="w-full lg:w-[340px] xl:w-[380px] flex-shrink-0 flex flex-col">
             <FormulaireDepense />
@@ -164,29 +190,43 @@ export default async function PageDashboard() {
 
           {/* Colonne droite */}
           <div className="flex-1 min-w-0 flex flex-col gap-4">
-            
             {/* Stats */}
             <div className="grid grid-cols-3 gap-3 sm:gap-4">
               {[
                 { label: "Dépenses", value: count.toString() },
                 {
                   label: "Moyenne",
-                  value: moyenne.toLocaleString("fr-FR", { style: "currency", currency: "EUR" }),
+                  value: moyenne.toLocaleString("fr-FR", {
+                    style: "currency",
+                    currency: "EUR",
+                  }),
                 },
                 {
                   label: "Record",
-                  value: max.toLocaleString("fr-FR", { style: "currency", currency: "EUR" }),
+                  value: max.toLocaleString("fr-FR", {
+                    style: "currency",
+                    currency: "EUR",
+                  }),
                 },
               ].map((stat, i) => (
                 <div
                   key={i}
                   className="rounded-2xl p-3 sm:p-4 flex flex-col gap-1"
-                  style={{ background: "rgba(202,60,102,0.06)", border: "1px solid rgba(202,60,102,0.15)" }}
+                  style={{
+                    background: "rgba(202,60,102,0.06)",
+                    border: "1px solid rgba(202,60,102,0.15)",
+                  }}
                 >
-                  <p className="text-[8px] sm:text-[9px] uppercase tracking-[0.18em] font-bold" style={{ color: "#A7E0E0" }}>
+                  <p
+                    className="text-[8px] sm:text-[9px] uppercase tracking-[0.18em] font-bold"
+                    style={{ color: "#A7E0E0" }}
+                  >
                     {stat.label}
                   </p>
-                  <p className="text-xl sm:text-3xl font-black leading-none" style={{ color: "#CA3C66" }}>
+                  <p
+                    className="text-xl sm:text-3xl font-black leading-none"
+                    style={{ color: "#CA3C66" }}
+                  >
                     {stat.value}
                   </p>
                 </div>
@@ -195,7 +235,6 @@ export default async function PageDashboard() {
 
             {/* Graphique + Historique */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
-              
               {/* Le Graphique Hebdomadaire avec l'en-tête réinjecté */}
               <div
                 className="rounded-2xl overflow-hidden flex flex-col"
@@ -204,8 +243,11 @@ export default async function PageDashboard() {
                   border: "1px solid rgba(202,60,102,0.15)",
                 }}
               >
-                <GraphiqueActivite 
-                  donnees={totauxJour.map(d => ({ label: d.jour, valeur: d.valeur }))}
+                <GraphiqueActivite
+                  donnees={totauxJour.map((d) => ({
+                    label: d.jour,
+                    valeur: d.valeur,
+                  }))}
                   couleurPrincipale="#CA3C66"
                   titreEnTete="Craquages Hebdomadaires"
                   sousTitreEnTete={`${totalSemaine.toLocaleString("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 })} cette semaine`}
@@ -226,9 +268,24 @@ export default async function PageDashboard() {
                   className="px-5 py-3 flex items-center justify-between gap-4"
                   style={{ borderBottom: "1px solid rgba(202,60,102,0.12)" }}
                 >
-                  <span className="flex-1 text-[10px] uppercase tracking-[0.18em] font-bold" style={{ color: "#A7E0E0" }}>Nom / Date</span>
-                  <span className="w-32 text-[10px] uppercase tracking-[0.18em] font-bold text-left" style={{ color: "#A7E0E0" }}>Catégorie</span>
-                  <span className="w-28 text-[10px] uppercase tracking-[0.18em] font-bold text-right" style={{ color: "#A7E0E0" }}>Montant</span>
+                  <span
+                    className="flex-1 text-[10px] uppercase tracking-[0.18em] font-bold"
+                    style={{ color: "#A7E0E0" }}
+                  >
+                    Nom / Date
+                  </span>
+                  <span
+                    className="w-32 text-[10px] uppercase tracking-[0.18em] font-bold text-left"
+                    style={{ color: "#A7E0E0" }}
+                  >
+                    Catégorie
+                  </span>
+                  <span
+                    className="w-28 text-[10px] uppercase tracking-[0.18em] font-bold text-right"
+                    style={{ color: "#A7E0E0" }}
+                  >
+                    Montant
+                  </span>
                 </div>
 
                 <div className="flex flex-col flex-1 py-1">
@@ -237,11 +294,13 @@ export default async function PageDashboard() {
                       className="flex items-center justify-center h-16 text-zinc-600 text-xs m-2 rounded-xl"
                       style={{ border: "1px dashed rgba(202,60,102,0.2)" }}
                     >
-                       Aucun craquage pour le moment.
+                      Aucun craquage pour le moment.
                     </div>
                   ) : (
                     recentes.map((depense) => {
-                      const badgeClass = getCategoryBadgeStyle(depense.category);
+                      const badgeClass = getCategoryBadgeStyle(
+                        depense.category,
+                      );
 
                       return (
                         <div
@@ -256,21 +315,26 @@ export default async function PageDashboard() {
                               {formatDate(depense.creerLe)}
                             </p>
                           </div>
-                          
+
                           <div className="w-32 flex-shrink-0 flex justify-start">
                             <span
                               className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full whitespace-nowrap uppercase tracking-wider ${badgeClass}`}
                             >
-                              {depense.category === "Top Craquage" ? "TOP CRAQUAGE" : depense.category.toUpperCase()}
+                              {depense.category === "Top Craquage"
+                                ? "TOP CRAQUAGE"
+                                : depense.category.toUpperCase()}
                             </span>
                           </div>
-                          
+
                           <div className="w-28 flex-shrink-0 text-right">
                             <p
                               className="text-sm sm:text-base font-black tracking-tight"
                               style={{ color: "#ED93B1" }}
                             >
-                              {depense.prix.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+                              {depense.prix.toLocaleString("fr-FR", {
+                                style: "currency",
+                                currency: "EUR",
+                              })}
                             </p>
                           </div>
                         </div>
@@ -283,10 +347,16 @@ export default async function PageDashboard() {
                   className="px-5 py-3 flex items-center justify-between gap-2 mt-auto"
                   style={{ borderTop: "1px solid rgba(202,60,102,0.12)" }}
                 >
-                  <p className="text-[10px] font-bold uppercase tracking-[0.12em]" style={{ color: "#A7E0E0" }}>
+                  <p
+                    className="text-[10px] font-bold uppercase tracking-[0.12em]"
+                    style={{ color: "#A7E0E0" }}
+                  >
                     Total :{" "}
                     <span style={{ color: "#ED93B1" }}>
-                      {total.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+                      {total.toLocaleString("fr-FR", {
+                        style: "currency",
+                        currency: "EUR",
+                      })}
                     </span>
                   </p>
                   <Link
@@ -299,13 +369,22 @@ export default async function PageDashboard() {
                     }}
                   >
                     Voir tout
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    <svg
+                      className="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </Link>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -320,10 +399,17 @@ export default async function PageDashboard() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p className="text-[11px] font-medium text-center sm:text-left" style={{ color: "rgb(82,82,91)" }}>
-            &copy; {new Date().getFullYear()} Zéro Pointé. Aucun droit réservé, contrôlez vos finances.
+          <p
+            className="text-[11px] font-medium text-center sm:text-left"
+            style={{ color: "rgb(82,82,91)" }}
+          >
+            &copy; {new Date().getFullYear()} Zéro Pointé. Aucun droit réservé,
+            contrôlez vos finances.
           </p>
-          <span className="text-[11px] font-semibold uppercase tracking-[0.1em]" style={{ color: "rgb(82,82,91)" }}>
+          <span
+            className="text-[11px] font-semibold uppercase tracking-[0.1em]"
+            style={{ color: "rgb(82,82,91)" }}
+          >
             Mise à jour {heureMAJ.toUpperCase()}
           </span>
         </div>
