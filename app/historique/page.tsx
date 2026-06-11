@@ -1,6 +1,4 @@
-// app/historique/page.tsx
 import prisma from "@/lib/prisma";
-import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import FiltresHistorique from "../composants/filtreshistorique";
@@ -179,7 +177,7 @@ export default async function PageHistorique({ searchParams }: PageProps) {
     <div className="min-h-screen bg-[#080808] text-zinc-100 flex flex-col antialiased">
       {/* Header */}
       <header className="border-b border-white/15 py-5 sticky top-0 z-10 bg-[#080808]/95 backdrop-blur-md w-full">
-        <div className="w-full px-8 flex items-center justify-between">
+        <div className="w-full px-4 md:px-8 flex items-center justify-between">
           <div className="flex items-center gap-3 sm:gap-4 min-w-0">
             <BoutonRetour />
             <div
@@ -217,7 +215,19 @@ export default async function PageHistorique({ searchParams }: PageProps) {
       </header>
 
       {/* Main Layout */}
-      <main className="flex-1 w-full px-8 py-10 flex flex-col gap-8">
+      <main className="flex-1 w-full px-4 md:px-8 py-6 md:py-10 flex flex-col gap-6 md:gap-8">
+        {/* Total affiché uniquement sur Mobile en haut de page */}
+        <div className="sm:hidden bg-zinc-900/30 border border-white/5 rounded-2xl p-4 flex justify-between items-center">
+          <span className="text-[10px] uppercase tracking-[2px] text-zinc-400 font-bold">Total dépensé</span>
+          <span className="text-xl font-black text-[#FF4A7D]">
+            {total.toLocaleString("fr-FR", {
+              style: "currency",
+              currency: "EUR",
+              maximumFractionDigits: 0,
+            })}
+          </span>
+        </div>
+
         {/* ── Bloc Top Catégories Dynamique et Cohérent ── */}
         {topCategories.length > 0 && (
           <div>
@@ -274,7 +284,7 @@ export default async function PageHistorique({ searchParams }: PageProps) {
           triActif={tri}
         />
 
-        {/* Tableau */}
+        {/* Tableau / Liste Responsive */}
         {depenses.length === 0 ? (
           <div className="flex items-center justify-center h-48 text-zinc-400 font-medium text-sm border border-dashed border-white/15 rounded-2xl bg-[#0d0d0d]">
             Aucune dépense pour cette sélection.
@@ -290,33 +300,82 @@ export default async function PageHistorique({ searchParams }: PageProps) {
               </span>
             </div>
 
-            <div className="overflow-x-auto w-full">
+            {/* 📱 Affichage MOBILE : Cartes empilées (Masqué sur md et +) */}
+            <div className="md:hidden divide-y divide-white/10">
+              {depenses.map((depense) => {
+                const validated = depense.votes.filter((v) => v.type === "VALIDATED").length;
+                const shameful = depense.votes.filter((v) => v.type === "SHAMEFUL").length;
+                const isTopCraquage = depense.category === "Top Craquage";
+                const badgeClass = getCategoryBadgeStyle(depense.category);
+
+                return (
+                  <div 
+                    key={depense.id} 
+                    className={`p-4 flex flex-col gap-3 transition-colors ${isTopCraquage ? "bg-gradient-to-b from-red-950/20 to-transparent" : ""}`}
+                  >
+                    {/* Ligne 1 : Titre et Prix */}
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-sm font-bold text-white truncate max-w-[70%]">
+                        {depense.titre}
+                      </span>
+                      <span className="text-base font-black text-[#FF4A7D] tracking-tight whitespace-nowrap">
+                        {depense.prix.toLocaleString("fr-FR", {
+                          style: "currency",
+                          currency: "EUR",
+                          maximumFractionDigits: 0,
+                        })}
+                      </span>
+                    </div>
+
+                    {/* Ligne 2 : Badge Catégorie et Date */}
+                    <div className="flex items-center justify-between">
+                      <span className={`inline-block text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wide ${badgeClass}`}>
+                        {isTopCraquage ? "TOP CRAQUAGE" : depense.category.toUpperCase()}
+                      </span>
+                      <span className="text-[11px] text-zinc-500 font-semibold">
+                        {formatDate(depense.creerLe)}
+                      </span>
+                    </div>
+
+                    {/* Ligne 3 : Votes */}
+                    <div className="flex items-center gap-4 bg-white/[0.02] p-2 rounded-lg border border-white/5 w-max">
+                      <span className="flex items-center gap-1 text-[11px] font-bold" style={{ color: "#A7E0E0" }}>
+                        <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z" />
+                          <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+                        </svg>
+                        {validated}
+                      </span>
+                      <span className="flex items-center gap-1 text-[11px] font-bold text-[#FF4A7D]">
+                        <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z" />
+                          <path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" />
+                        </svg>
+                        {shameful}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* 🖥️ Affichage DESKTOP : Vrai Tableau (Masqué sur mobile, visible sur md et +) */}
+            <div className="hidden md:block overflow-x-auto w-full">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-white/10 bg-white/[0.005] text-[10px] uppercase tracking-[2px] text-zinc-500 font-bold">
-                    <th className="py-3 px-6 font-extrabold">
-                      Titre / Intitulé
-                    </th>
+                    <th className="py-3 px-6 font-extrabold">Titre / Intitulé</th>
                     <th className="py-3 px-6 font-extrabold w-48">Catégorie</th>
                     <th className="py-3 px-6 font-extrabold w-48">Date</th>
-                    <th className="py-3 px-6 font-extrabold w-48 text-center">
-                      Votes
-                    </th>
-                    <th className="py-3 px-6 font-extrabold w-48 text-right">
-                      Prix
-                    </th>
+                    <th className="py-3 px-6 font-extrabold w-48 text-center">Votes</th>
+                    <th className="py-3 px-6 font-extrabold w-48 text-right">Prix</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
                   {depenses.map((depense) => {
-                    const validated = depense.votes.filter(
-                      (v) => v.type === "VALIDATED",
-                    ).length;
-                    const shameful = depense.votes.filter(
-                      (v) => v.type === "SHAMEFUL",
-                    ).length;
+                    const validated = depense.votes.filter((v) => v.type === "VALIDATED").length;
+                    const shameful = depense.votes.filter((v) => v.type === "SHAMEFUL").length;
                     const isTopCraquage = depense.category === "Top Craquage";
-
                     const badgeClass = getCategoryBadgeStyle(depense.category);
 
                     return (
@@ -328,12 +387,8 @@ export default async function PageHistorique({ searchParams }: PageProps) {
                           {depense.titre}
                         </td>
                         <td className="py-4 px-6">
-                          <span
-                            className={`inline-block text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wide ${badgeClass}`}
-                          >
-                            {isTopCraquage
-                              ? "TOP CRAQUAGE"
-                              : depense.category.toUpperCase()}
+                          <span className={`inline-block text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wide ${badgeClass}`}>
+                            {isTopCraquage ? "TOP CRAQUAGE" : depense.category.toUpperCase()}
                           </span>
                         </td>
                         <td className="py-4 px-6 text-[11px] text-zinc-400 font-semibold">
@@ -341,26 +396,15 @@ export default async function PageHistorique({ searchParams }: PageProps) {
                         </td>
                         <td className="py-4 px-6">
                           <div className="flex items-center justify-center gap-4">
-                            <span
-                              className="flex items-center gap-1 text-[11px] font-bold"
-                              style={{ color: "#A7E0E0" }}
-                            >
-                              <svg
-                                className="w-3.5 h-3.5"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                              >
+                            <span className="flex items-center gap-1 text-[11px] font-bold" style={{ color: "#A7E0E0" }}>
+                              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z" />
                                 <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
                               </svg>
                               {validated}
                             </span>
                             <span className="flex items-center gap-1 text-[11px] font-bold text-[#FF4A7D]">
-                              <svg
-                                className="w-3.5 h-3.5"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                              >
+                              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z" />
                                 <path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" />
                               </svg>

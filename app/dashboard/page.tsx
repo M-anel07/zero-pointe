@@ -3,6 +3,7 @@ import Link from "next/link";
 import FormulaireDepense from "../composants/formulairedepense";
 import BoutonRetour from "../composants/boutonretour";
 import GraphiqueActivite from "../composants/graphiqueactivite";
+import Footer from "../composants/footer";
 
 async function getDepenses() {
   return await prisma.depense.findMany({
@@ -252,7 +253,7 @@ export default async function PageDashboard() {
                   titreEnTete="Craquages Hebdomadaires"
                   sousTitreEnTete={`${totalSemaine.toLocaleString("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 })} cette semaine`}
                   textePeriode={titrePeriode.toUpperCase()}
-                  texteAide="Repart à zéro lundi"
+                  texteAide="Repart à zéro dimanche soir"
                 />
               </div>
 
@@ -391,29 +392,7 @@ export default async function PageDashboard() {
       </div>
 
       {/* Footer */}
-      <footer
-        className="mt-auto py-5"
-        style={{
-          background: "rgba(13,13,13,0.9)",
-          borderTop: "1px solid rgba(202,60,102,0.12)",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p
-            className="text-[11px] font-medium text-center sm:text-left"
-            style={{ color: "rgb(82,82,91)" }}
-          >
-            &copy; {new Date().getFullYear()} Zéro Pointé. Aucun droit réservé,
-            contrôlez vos finances.
-          </p>
-          <span
-            className="text-[11px] font-semibold uppercase tracking-[0.1em]"
-            style={{ color: "rgb(82,82,91)" }}
-          >
-            Mise à jour {heureMAJ.toUpperCase()}
-          </span>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
