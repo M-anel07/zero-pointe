@@ -56,9 +56,9 @@ export async function POST(req: NextRequest) {
     select: { type: true, userId: true },
   })
 
-  const rejets = votes.filter(v => v.type === 'SHAMEFUL').length
-  const approbations = votes.filter(v => v.type === 'VALIDATED').length
-  const monVote = votes.find(v => v.userId === user.id)?.type ?? null
+const rejets = votes.filter((v: { type: string, userId: string }) => v.type === 'SHAMEFUL').length
+const approbations = votes.filter((v: { type: string, userId: string }) => v.type === 'VALIDATED').length
+const monVote = votes.find((v: { type: string, userId: string }) => v.userId === user.id)?.type ?? null
 
   return NextResponse.json({ rejets, approbations, monVote })
 }

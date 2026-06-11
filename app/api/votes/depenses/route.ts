@@ -29,13 +29,13 @@ export async function GET() {
     },
   })
 
-  const result = depenses
-    .map(d => {
-      const rejets = d.votes.filter(v => v.type === 'SHAMEFUL').length
-      const approbations = d.votes.filter(v => v.type === 'VALIDATED').length
+const result = depenses
+    .map((d: typeof depenses[number]) => {
+      const rejets = d.votes.filter((v: { type: string }) => v.type === 'SHAMEFUL').length
+      const approbations = d.votes.filter((v: { type: string }) => v.type === 'VALIDATED').length
       return { ...d, rejets, approbations }
     })
-    .sort((a, b) => b.rejets - a.rejets)
+.sort((a: { rejets: number }, b: { rejets: number }) => b.rejets - a.rejets)
 
   return NextResponse.json(result)
 }

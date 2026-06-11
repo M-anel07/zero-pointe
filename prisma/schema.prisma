@@ -1,11 +1,11 @@
 datasource db {
-  provider = "mongodb" // <-- On passe sur mongodb
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
   provider        = "prisma-client-js"
   output          = "../app/generated/prisma/client"
-  previewFeatures = ["driverAdapters"]
 }
 
 model User {

@@ -92,10 +92,10 @@ export default async function PageCompte() {
     };
   });
 
-  const totalAnnuel = depensesBrutes.reduce(
-    (acc, d) => acc + Number(d.prix),
-    0,
-  );
+const totalAnnuel = depensesBrutes.reduce(
+  (acc: number, d) => acc + Number(d.prix),
+  0,
+);
 
   const debutMoisActuel = new Date(
     maintenant.getFullYear(),
