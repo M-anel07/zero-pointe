@@ -1,4 +1,4 @@
-// app/api/compte/avatar/route.ts
+// app/compte/avatar/route.ts
 import { getServerSession } from "next-auth"
 import { NextResponse } from "next/server"
 import prisma from "@/lib/prisma"
