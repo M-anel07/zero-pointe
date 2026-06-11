@@ -1,5 +1,5 @@
 datasource db {
-  provider = "mysql"
+  provider = "mongodb" // <-- On passe sur mongodb
 }
 
 generator client {
@@ -9,32 +9,32 @@ generator client {
 }
 
 model User {
-  id        String    @id @default(uuid())
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId // <-- Format MongoDB
   pseudo    String?   @unique
   email     String?   @unique
   mdp       String?
-  image     String?   // <-- ajouté pour l'avatar
+  image     String?   
   depense   Depense[]
   votes     Vote[]
   inscritLe DateTime  @default(now())
 }
 
 model Depense {
-  id       String   @id @default(uuid())
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId // <-- Format MongoDB
   titre    String
   prix     Float
   category String
-  userId   String
+  userId   String   @db.ObjectId // <-- Format MongoDB
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   votes    Vote[]
   creerLe  DateTime @default(now())
 }
 
 model Vote {
-  id        String  @id @default(uuid())
-  type      String  // "VALIDATED" ou "SHAMEFUL"
-  userId    String
-  depenseId String
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId // <-- Format MongoDB
+  type      String  
+  userId    String  @db.ObjectId // <-- Format MongoDB
+  depenseId String  @db.ObjectId // <-- Format MongoDB
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   depense   Depense @relation(fields: [depenseId], references: [id], onDelete: Cascade)
 
