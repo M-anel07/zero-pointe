@@ -430,13 +430,7 @@ export default async function PageHistorique({ searchParams }: PageProps) {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-6 mt-4 bg-black/40">
-        <div className="w-full px-8 text-center">
-          <p className="text-zinc-400 text-xs font-medium">
-            &copy; {new Date().getFullYear()} Zéro Pointé — aucun droit réservé.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
