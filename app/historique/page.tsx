@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import FiltresHistorique from "../composants/filtreshistorique";
 import BoutonRetour from "../composants/boutonretour";
+import Footer from "../composants/footer";
 
 const OFFICIEL_CATEGORIES = [
   "Shopping",
